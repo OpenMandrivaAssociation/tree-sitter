@@ -4,8 +4,8 @@
 %define sdevname %mklibname tree-sitter -d -s
 
 Name: tree-sitter
-Version: 0.20.0
-Release: 1
+Version:	0.20.1
+Release:	1
 Source0: https://github.com/tree-sitter/tree-sitter/archive/refs/tags/v%{version}.tar.gz
 Summary: Parser generator tool and incremental parsing library
 URL: https://tree-sitter.github.io/
