@@ -1,11 +1,12 @@
 %define major 0
-%define libname %mklibname tree-sitter %{major}
+%define oldlibname %mklibname tree-sitter 0
+%define libname %mklibname tree-sitter
 %define devname %mklibname tree-sitter -d
 %define sdevname %mklibname tree-sitter -d -s
 
 Name: tree-sitter
 Version:	0.20.8
-Release:	1
+Release:	2
 Source0: https://github.com/tree-sitter/tree-sitter/archive/refs/tags/v%{version}.tar.gz
 Summary: Parser generator tool and incremental parsing library
 URL: https://tree-sitter.github.io/
@@ -26,6 +27,7 @@ the syntax tree as the source file is edited. Tree-sitter aims to be:
 %package -n %{libname}
 Summary: Parser generator tool and incremental parsing library
 Group: System/Libraries
+%rename %{oldlibname}
 
 %description -n %{libname}
 Tree-sitter is a parser generator tool and an incremental parsing library.
@@ -78,10 +80,10 @@ the syntax tree as the source file is edited. Tree-sitter aims to be:
 %autosetup -p1
 
 %build
-%make_build PREFIX=%{_prefix} LIBDIR=%{_libdir} CFLAGS="%{optflags}"
+%make_build PREFIX=%{_prefix} LIBDIR=%{_libdir} CC="%{__cc}" CFLAGS="%{optflags}"
 
 %install
-%make_install PREFIX=%{_prefix} LIBDIR=%{_libdir} CFLAGS="%{optflags}"
+%make_install PREFIX=%{_prefix} LIBDIR=%{_libdir} CC="%{__cc}" CFLAGS="%{optflags}"
 
 %files -n %{libname}
 %{_libdir}/*.so.%{major}*
