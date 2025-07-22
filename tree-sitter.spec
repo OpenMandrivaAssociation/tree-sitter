@@ -3,11 +3,15 @@
 %define libname %mklibname tree-sitter
 %define devname %mklibname tree-sitter -d
 %define sdevname %mklibname tree-sitter -d -s
+%define cliname tree-sitter_cli
 
 Name: tree-sitter
-Version:	0.25.1
+Version:	0.25.8
 Release:	1
-Source0: https://github.com/tree-sitter/tree-sitter/archive/refs/tags/v%{version}.tar.gz
+Source0: https://github.com/tree-sitter/tree-sitter/archive/v%{version}/%{name}-%{version}.tar.gz
+# Source1 is the vendored files for tree-sitter cli. It is generated using cargo-vendor.sh which is
+# included in this repository.
+Source1: %{name}-%{version}-vendor.tar.xz 
 Summary: Parser generator tool and incremental parsing library
 URL: https://tree-sitter.github.io/
 License: MIT
@@ -76,14 +80,29 @@ the syntax tree as the source file is edited. Tree-sitter aims to be:
 * Dependency-free so that the runtime library (which is written in pure C) can
   be embedded in any application
 
+%package -n %{cliname}
+Summary: Tree-sitter command line interface 
+Group: Development/Other
+Requires: nodejs
+Requires: clang
+BuildRequires: rust
+BuildRequires: cargo
+%description -n %{cliname}
+The Tree-sitter CLI allows you to develop, test, and use Tree-sitter grammars
+from the command line
+
 %prep
-%autosetup -p1
+%autosetup -a1 -p1
 
 %build
 %make_build PREFIX=%{_prefix} LIBDIR=%{_libdir} CC="%{__cc}" CFLAGS="%{optflags}"
+cd "%{builddir}/%{buildsubdir}/cli"
+cargo build --release --frozen
 
 %install
 %make_install PREFIX=%{_prefix} LIBDIR=%{_libdir} CC="%{__cc}" CFLAGS="%{optflags}"
+cd "%{builddir}/%{buildsubdir}/cli"
+cargo install --path . --root %{buildroot}/%{_prefix} --frozen --no-track
 
 %files -n %{libname}
 %{_libdir}/*.so.%{major}*
@@ -95,3 +114,6 @@ the syntax tree as the source file is edited. Tree-sitter aims to be:
 
 %files -n %{sdevname}
 %{_libdir}/*.a
+
+%files -n %{cliname}
+%{_bindir}/%{name}
