@@ -85,6 +85,7 @@ Summary: Tree-sitter command line interface
 Group: Development/Other
 Requires: nodejs
 Requires: clang
+BuildRequires:	make
 BuildRequires: rust
 BuildRequires: cargo
 %description -n %{cliname}
